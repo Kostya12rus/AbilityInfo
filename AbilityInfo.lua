@@ -3,6 +3,7 @@ AbilityInfom.optionEnable = Menu.AddOption({"Kostya12rus", "Ability Info"}, "On/
 
 function AbilityInfom.OnLinearProjectileCreate(projectile)
 	if not Menu.IsEnabled(AbilityInfom.optionEnable) then return end
+	if not Heroes.GetLocal() then return end
 	local temptable = {}
 	if not Entity.IsSameTeam(Heroes.GetLocal(),projectile.source) then
 		if projectile.name == "mirana_spell_arrow" then
@@ -21,6 +22,7 @@ end
 
 function AbilityInfom.OnParticleCreate(particle)
 	if not Menu.IsEnabled(AbilityInfom.optionEnable) then return end
+	if not Heroes.GetLocal() then return end
 	local temptable = {}
 	if (particle.entity and not Entity.IsSameTeam(Heroes.GetLocal(),particle.entity)) or not particle.entity then
 		if particle.name == "smoke_of_deceit" then
@@ -101,8 +103,10 @@ end
 
 function AbilityInfom.OnParticleUpdate(particle)
 	for _,parttable in pairs(wellwellpel) do
-		if particle.index == parttable.numberpart and parttable.name == "smoke_of_deceit" and particle.controlPoint == 0 and not parttable.vector then
-			parttable.vector = particle.position
+		if parttable then
+			if particle.index == parttable.numberpart and parttable.name == "smoke_of_deceit" and particle.controlPoint == 0 and not parttable.vector then
+				parttable.vector = particle.position
+			end
 		end
 	end
 end
@@ -152,6 +156,7 @@ function AbilityInfom.OnUpdate()
 end
 
 function AbilityInfom.OnDraw()
+	if not Heroes.GetLocal() then return end
 	if not drawimg then return end
 	for i,abil in pairs(wellwellpel) do
 		if abil then
