@@ -1,0 +1,260 @@
+local AbilityInfo = {}
+AbilityInfo.optionEnable = Menu.AddOption({"Kostya12rus", "Ability Info"}, "On/Off script", "Shows used abilities")
+
+function AbilityInfo.OnLinearProjectileCreate(projectile)
+	if not Menu.IsEnabled(AbilityInfo.optionEnable) then return end
+	local temptable = {}
+	if not Entity.IsSameTeam(Heroes.GetLocal(),projectile.source) then
+		if projectile.name == "mirana_spell_arrow" then
+			temptable = 
+			{
+				name = "mirana_arrow",
+				sourse = projectile.source,
+				target = projectile.source,
+				timer = GameRules.GetGameTime() + 5,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
+		end
+	end
+end
+
+function AbilityInfo.OnParticleCreate(particle)
+	if not Menu.IsEnabled(AbilityInfo.optionEnable) then return end
+	local temptable = {}
+	if (particle.entity and not Entity.IsSameTeam(Heroes.GetLocal(),particle.entity)) or not particle.entity then
+		if particle.name == "smoke_of_deceit" then
+			temptable = 
+			{
+				name = "smoke_of_deceit",
+				sourse = nil,
+				target = nil,
+				timer = GameRules.GetGameTime() + 10,
+				format = true,
+				numberpart = particle.index,
+				vector = nil
+			}
+			table.insert(wellwellpel,temptable)
+		elseif particle.name == "nyx_assassin_vendetta_start" then
+			temptable = 
+			{
+				name = "nyx_assassin_vendetta",
+				sourse = nil,
+				target = nil,
+				timer = GameRules.GetGameTime() + 20,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
+		elseif particle.name == "spirit_breaker_charge_start" then
+			temptable = 
+			{
+				name = "spirit_breaker_charge_of_darkness",
+				sourse = particle.entity,
+				target = nil,
+				timer = GameRules.GetGameTime() + 10,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
+		elseif particle.name == "mirana_moonlight_cast" then
+			temptable = 
+			{
+				name = "mirana_invis",
+				sourse = particle.entity,
+				target = particle.entity,
+				timer = GameRules.GetGameTime() + 20,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
+		elseif particle.name == "clinkz_windwalk" then
+			temptable = 
+			{
+				name = "clinkz_wind_walk",
+				sourse = particle.entity,
+				target = particle.entity,
+				timer = GameRules.GetGameTime() + 5,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
+		elseif particle.name == "bounty_hunter_windwalk" then
+			temptable = 
+			{
+				name = "bounty_hunter_wind_walk",
+				sourse = particle.entity,
+				target = particle.entity,
+				timer = GameRules.GetGameTime() + 5,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
+		elseif particle.name == "bounty_hunter_windwalk" then
+			temptable = 
+			{
+				name = "sven_spell_gods_strength",
+				sourse = particle.entity,
+				target = particle.entity,
+				timer = GameRules.GetGameTime() + 5,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
+		end
+	end
+end
+
+function AbilityInfo.OnParticleUpdate(particle)
+	for _,parttable in pairs(wellwellpel) do
+		if particle.index == parttable.numberpart and parttable.name == "smoke_of_deceit" and particle.controlPoint == 0 and not parttable.vector then
+			parttable.vector = particle.position
+		end
+	end
+end
+
+function AbilityInfo.OnUpdate()
+	if not Menu.IsEnabled(AbilityInfo.optionEnable) then drawimg = false return end
+	local myHero = Heroes.GetLocal()
+	if not myHero then return end
+	for i,clear in pairs(wellwellpel) do
+		if clear then
+			if clear.timer <= GameRules.GetGameTime() then
+				wellwellpel[i] = nil
+			end
+			if not clear.sourse or not clear.target then
+				for _,hero in pairs(NPCs.GetAll()) do
+					if not Entity.IsSameTeam(Heroes.GetLocal(),hero) then
+						if clear.name == "nyx_assassin_vendetta" and hero and NPC.HasAbility(hero,"nyx_assassin_vendetta") then
+							clear.sourse = hero
+							clear.target = hero
+						elseif clear.name == "bounty_hunter_wind_walk" and hero and NPC.HasAbility(hero,"bounty_hunter_wind_walk") then
+							clear.sourse = hero
+							clear.target = hero
+						elseif clear.name == "sven_spell_gods_strength" and hero and NPC.HasAbility(hero,"sven_spell_gods_strength") then
+							clear.sourse = hero
+							clear.target = hero
+						end
+					else
+						if clear.name == "spirit_breaker_charge_of_darkness" and hero and NPC.HasModifier(hero,"modifier_spirit_breaker_charge_of_darkness_vision") then
+							clear.target = hero
+						end
+						if clear.name == "smoke_of_deceit" and npc and NPC.HasModifier(npc,"modifier_smoke_of_deceit")then
+							wellwellpel[i] = nil
+						end
+					end
+				end
+			end
+		end
+	end
+	for i,hero in pairs(Heroes.GetAll()) do
+		if hero then
+			if not HeroImg[NPC.GetUnitName(hero)] then
+				HeroImg[NPC.GetUnitName(hero)] = Renderer.LoadImage(heroIcon .. NPC.GetUnitName(hero) .. ".png")
+			end
+		end
+	end
+	drawimg = true
+end
+
+function AbilityInfo.OnDraw()
+	if not drawimg then return end
+	for i,abil in pairs(wellwellpel) do
+		if abil then
+			local img2 
+			if abil.name == "smoke_of_deceit" then
+				if not HeroImg[abil.name] then
+					HeroImg[abil.name] = Renderer.LoadImage("resource/flash3/images/items/" .. abil.name .. ".png")
+				end
+				img2 = HeroImg[abil.name]
+			else
+				if not HeroImg[abil.name] then
+					HeroImg[abil.name] = Renderer.LoadImage(spellIconpath .. abil.name .. ".png")
+				end
+				img2 = HeroImg[abil.name]
+			end
+			
+			local img1
+			if abil.sourse then
+				img1 = HeroImg[NPC.GetUnitName(abil.sourse)]
+			else
+				img1 = img2
+			end
+			
+			local img3
+			if abil.target then
+				img3 = HeroImg[NPC.GetUnitName(abil.target)]
+			else
+				img3 = img2
+			end
+			AbilityInfo.DrawInfo(img1,img2,img3,i,abil.format)
+		end
+	end
+end
+
+
+function AbilityInfo.DrawInfo(img1,img2,img3,index,formats)
+	Renderer.SetDrawColor(255,255,255,255)
+	local posx = math.ceil(size_x-backgroundsize*3)
+	local posy = math.ceil(size_y-200-backgroundsize*1.1*index)
+	Renderer.DrawImage(blankcard,posx,posy,backgroundsize*3,backgroundsize)
+	
+	
+	local imgposx1 = math.ceil(posx+backgroundsize*0.32)
+	local imgposy1 = math.ceil(posy + (backgroundsize-imgsize)/2)
+	if not img1 then
+		Renderer.DrawImage(cleercard,imgposx1,imgposy1,math.ceil(imgsize*0.90),imgsize)
+	else
+		Renderer.DrawImage(img1,imgposx1,imgposy1,math.ceil(imgsize*0.90),imgsize)
+	end
+	
+	local imgsize2 = math.ceil(imgsize*0.75)
+	local imgposx2 = math.ceil(posx+(backgroundsize*3)/2-imgsize2/2)
+	local imgposy2 = math.ceil(posy + (backgroundsize-imgsize2)/2)
+	Renderer.DrawImage(img2,imgposx2,imgposy2,imgsize2,imgsize2)
+	
+	if formats then
+		local imgposx3 = math.ceil(posx+backgroundsize*2)
+		local imgposy3 = math.ceil(posy + (backgroundsize-imgsize)/2)
+		if not img3 then
+			Renderer.DrawImage(cleercard,imgposx3,imgposy3,math.ceil(imgsize*0.90),imgsize)
+		else
+			Renderer.DrawImage(img3,imgposx3,imgposy3,math.ceil(imgsize*0.90),imgsize)
+		end
+	else
+		local imgposx3 = math.ceil(posx+backgroundsize*2)
+		local imgposy3 = math.ceil(posy + (backgroundsize-imgsize)/2)
+		if not img3 then
+			Renderer.DrawImage(cleercard,imgposx3,imgposy3,imgsize,imgsize)
+		else
+			Renderer.DrawImage(img3,imgposx3,imgposy3,imgsize,imgsize)
+		end
+	end
+end
+
+function AbilityInfo.init()
+	blankcard = Renderer.LoadImage('resource/flash3/images/heroes/selection/blankcard_loadout.png')
+	cleercard = Renderer.LoadImage('resource/flash3/images/spellicons/invoker_empty1.png')
+	heroIcon = "resource/flash3/images/heroes/selection/"
+	heroIconpaths = "resource/flash3/images/heroes/"
+	spellIconpath = "resource/flash3/images/spellicons/"
+	ItemIconpath = "resource/flash3/images/items/"
+	HeroImg = {}
+	bara = false
+	timing = 0
+	backgroundsize = 88
+	imgsize = math.ceil(backgroundsize*0.75)
+	size_x, size_y = Renderer.GetScreenSize()
+	drawimg = false
+	wellwellpel = {}
+	abilitykekas = 
+	{
+		"spirit_breaker_charge_start",
+		"rubick_cast_spell_steal"
+	}
+end
+
+function AbilityInfo.OnGameStart()
+  AbilityInfo.init()
+end
+
+function AbilityInfo.OnGameEnd()
+  AbilityInfo.init()
+end
+AbilityInfo.init()
+
+return AbilityInfo
