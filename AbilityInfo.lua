@@ -85,10 +85,10 @@ function AbilityInfom.OnParticleCreate(particle)
 				format = true
 			}
 			table.insert(wellwellpel,temptable)
-		elseif particle.name == "bounty_hunter_windwalk" then
+		elseif particle.name == "sven_spell_gods_strength" then
 			temptable = 
 			{
-				name = "sven_spell_gods_strength",
+				name = "sven_gods_strength",
 				sourse = particle.entity,
 				target = particle.entity,
 				timer = GameRules.GetGameTime() + 5,
@@ -125,7 +125,7 @@ function AbilityInfom.OnUpdate()
 						elseif clear.name == "bounty_hunter_wind_walk" and hero and NPC.HasAbility(hero,"bounty_hunter_wind_walk") then
 							clear.sourse = hero
 							clear.target = hero
-						elseif clear.name == "sven_spell_gods_strength" and hero and NPC.HasAbility(hero,"sven_spell_gods_strength") then
+						elseif clear.name == "sven_gods_strength" and hero and NPC.HasAbility(hero,"sven_gods_strength") then
 							clear.sourse = hero
 							clear.target = hero
 						end
