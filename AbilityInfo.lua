@@ -97,7 +97,19 @@ function AbilityInfom.OnParticleCreate(particle)
 				format = true
 			}
 			table.insert(wellwellpel,temptable)
+		elseif particle.name == "wisp_relocate_channel" then
+			temptable = 
+			{
+				name = "wisp_relocate",
+				sourse = particle.entity,
+				target = particle.entity,
+				timer = GameRules.GetGameTime() + 5,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
+		
 		end
+		
 	end
 end
 
@@ -115,11 +127,12 @@ function AbilityInfom.OnUpdate()
 	if not Menu.IsEnabled(AbilityInfom.optionEnable) then drawimg = false return end
 	local myHero = Heroes.GetLocal()
 	if not myHero then return end
-	
 	local npcSource = nil
 	local npcTarget = nil
+	local nameabill = nil
 	for _,npc1 in pairs(NPCs.GetAll()) do
-		if npc1 and NPC.HasModifier(npc1,"modifier_invoker_sun_strike") and not Entity.IsSameTeam(Heroes.GetLocal(),npc1) and Entity.IsAlive(npc1) then
+		if npc1 and NPC.HasModifier(npc1,"modifier_invoker_sun_strike") and not Entity.IsSameTeam(Heroes.GetLocal(),npc1) and timerss <= GameRules.GetGameTime() then
+			nameabill = "invoker_sun_strike"
 			for _,nps2 in pairs(NPCs.GetAll()) do
 				if nps2 and not Entity.IsSameTeam(Heroes.GetLocal(),nps2) and NPC.HasAbility(nps2,"invoker_sun_strike") then
 					npcSource = nps2
@@ -129,24 +142,40 @@ function AbilityInfom.OnUpdate()
 			if #heroinradius ~= 0 then
 				npcTarget = heroinradius[1]
 			end
-		end
+			timerss = GameRules.GetGameTime() + 3
+		elseif npc1 and NPC.HasModifier(npc1,"modifier_kunkka_torrent_thinker") and not Entity.IsSameTeam(Heroes.GetLocal(),npc1) and timertorrent <= GameRules.GetGameTime() then
+			nameabill = "kunkka_torrent"
+			for _,nps2 in pairs(NPCs.GetAll()) do
+				if nps2 and not Entity.IsSameTeam(Heroes.GetLocal(),nps2) and NPC.HasAbility(nps2,"kunkka_torrent") then
+					npcSource = nps2
+				end
+			end
+			local heroinradius = Heroes.InRadius(Entity.GetAbsOrigin(npc1),1000,Entity.GetTeamNum(Heroes.GetLocal()),Enum.TeamType.TEAM_FRIEND)
+			if #heroinradius ~= 0 then
+				npcTarget = heroinradius[1]
+			end
+			timertorrent = GameRules.GetGameTime() + 3
+		end 
 	end
 	if npcSource or npcTarget then
 		local temptable = 
 		{
-			name = "invoker_sun_strike",
+			name = nameabill,
 			sourse = npcSource,
 			target = npcTarget,
 			timer = GameRules.GetGameTime() + 3,
 			format = true
 		}
 		local writess = true
+		local writetorent = true
 		for _,abiltable in pairs(wellwellpel) do
-			if abiltable.name == "invoker_sun_strike" then
+			if abiltable.name == "invoker_sun_strike" and timerss > GameRules.GetGameTime()then
 				writess = false
+			elseif abiltable.name == "kunkka_torrent" and timertorrent > GameRules.GetGameTime() then
+				writetorent = false
 			end
 		end
-		if writess then
+		if writess or writetorent then
 			table.insert(wellwellpel,temptable)
 		end
 	end
@@ -274,7 +303,8 @@ function AbilityInfom.init()
 	spellIconpath = "resource/flash3/images/spellicons/"
 	ItemIconpath = "resource/flash3/images/items/"
 	HeroImg = {}
-	timing = 0
+	timerss = 0
+	timertorrent = 0
 	backgroundsize = 88
 	imgsize = math.ceil(backgroundsize*0.75)
 	size_x, size_y = Renderer.GetScreenSize()
