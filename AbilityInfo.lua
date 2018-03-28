@@ -93,7 +93,7 @@ function AbilityInfom.OnParticleCreate(particle)
 				name = "sven_gods_strength",
 				sourse = particle.entity,
 				target = particle.entity,
-				timer = GameRules.GetGameTime() + 5,
+				timer = GameRules.GetGameTime() + 10,
 				format = true
 			}
 			table.insert(wellwellpel,temptable)
@@ -107,9 +107,88 @@ function AbilityInfom.OnParticleCreate(particle)
 				format = true
 			}
 			table.insert(wellwellpel,temptable)
-		
+		elseif particle.name == "lycan_shapeshift_cast" then
+			temptable = 
+			{
+				name = "lycan_shapeshift",
+				sourse = particle.entity,
+				target = particle.entity,
+				timer = GameRules.GetGameTime() + 5,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
+		elseif particle.name == "alchemist_unstableconc_bottles" then
+			temptable = 
+			{
+				name = "alchemist_unstable_concoction_throw",
+				sourse = particle.entity,
+				target = particle.entity,
+				timer = GameRules.GetGameTime() + 5,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
+		elseif particle.name == "alchemist_chemichalrage_effect" then
+			temptable = 
+			{
+				name = "alchemist_chemical_rage",
+				sourse = particle.entity,
+				target = particle.entity,
+				timer = GameRules.GetGameTime() + 5,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
+		elseif particle.name == "centaur_stampede" then
+			temptable = 
+			{
+				name = "centaur_stampede",
+				sourse = particle.entity,
+				target = particle.entity,
+				timer = GameRules.GetGameTime() + 5,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
+		elseif particle.name == "teleport_start" and not Entity.IsSameTeam(Heroes.GetLocal(),particle.entityForModifiers)  then
+			temptable = 
+			{
+				name = "tpscroll",
+				sourse = particle.entityForModifiers,
+				target = particle.entityForModifiers,
+				timer = GameRules.GetGameTime() + 4,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
+		elseif particle.name == "sandking_epicenter_tell" then
+			temptable = 
+			{
+				name = "sandking_epicenter",
+				sourse = particle.entity,
+				target = particle.entity,
+				timer = GameRules.GetGameTime() + 5,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
 		end
-		
+	end
+	if particle.name == "roshan_spawn" then
+		temptable = 
+		{
+			name = "roshan_halloween_angry",
+			sourse = nil,
+			target = nil,
+			timer = GameRules.GetGameTime() + 20,
+			format = true
+		}
+		table.insert(wellwellpel,temptable)
+	elseif particle.name == "roshan_slam" then
+		temptable = 
+		{
+			name = "roshan_slam",
+			sourse = nil,
+			target = nil,
+			timer = GameRules.GetGameTime() + 5,
+			format = true
+		}
+		table.insert(wellwellpel,temptable)
 	end
 end
 
@@ -156,6 +235,43 @@ function AbilityInfom.OnUpdate()
 			end
 			timertorrent = GameRules.GetGameTime() + 3
 		end 
+		if npc1 and NPC.HasModifier(npc1,"modifier_item_invisibility_edge_windwalk") and not NPC.HasState(npc1,Enum.ModifierState.MODIFIER_STATE_INVISIBLE) and not Entity.IsSameTeam(Heroes.GetLocal(),npc1) then
+			local writeinfo = true
+			for _,abiltable in pairs(wellwellpel) do
+				if abiltable.name == "invis_sword" and npc1 == abiltable.sourse then
+					writeinfo = false
+				end
+			end
+			if writeinfo then
+				local temptable1 = 
+				{
+					name = "invis_sword",
+					sourse = npc1,
+					target = npc1,
+					timer = GameRules.GetGameTime() + 5,
+					format = true
+				}
+				table.insert(wellwellpel,temptable1)
+			end
+		elseif npc1 and NPC.HasModifier(npc1,"modifier_item_silver_edge_windwalk") and not NPC.HasState(npc1,Enum.ModifierState.MODIFIER_STATE_INVISIBLE) and not Entity.IsSameTeam(Heroes.GetLocal(),npc1) then
+			local writeinfo = true
+			for _,abiltable in pairs(wellwellpel) do
+				if abiltable.name == "silver_edge" and npc1 == abiltable.sourse then
+					writeinfo = false
+				end
+			end
+			if writeinfo then
+				local temptable1 = 
+				{
+					name = "silver_edge",
+					sourse = npc1,
+					target = npc1,
+					timer = GameRules.GetGameTime() + 5,
+					format = true
+				}
+				table.insert(wellwellpel,temptable1)
+			end
+		end
 	end
 	if npcSource or npcTarget then
 		local temptable = 
@@ -225,7 +341,7 @@ function AbilityInfom.OnDraw()
 	for i,abil in pairs(wellwellpel) do
 		if abil then
 			local img2 
-			if abil.name == "smoke_of_deceit" then
+			if abil.name == "smoke_of_deceit" or abil.name == "tpscroll" or abil.name == "invis_sword" or abil.name == "silver_edge" then
 				if not HeroImg[abil.name] then
 					HeroImg[abil.name] = Renderer.LoadImage("resource/flash3/images/items/" .. abil.name .. ".png")
 				end
@@ -310,6 +426,7 @@ function AbilityInfom.init()
 	size_x, size_y = Renderer.GetScreenSize()
 	drawimg = false
 	wellwellpel = {}
+	InvisInfo = {}
 end
 
 function AbilityInfom.OnGameStart()
