@@ -1,4 +1,4 @@
-local AbilityInfomm = {}
+local AbilityInfom = {}
 AbilityInfom.optionEnable = Menu.AddOption({"Kostya12rus", "Ability Info"}, "On/Off script", "Shows used abilities")
 
 function AbilityInfom.OnLinearProjectileCreate(projectile)
