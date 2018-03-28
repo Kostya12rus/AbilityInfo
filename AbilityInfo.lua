@@ -1,8 +1,8 @@
-local AbilityInfo = {}
-AbilityInfo.optionEnable = Menu.AddOption({"Kostya12rus", "Ability Info"}, "On/Off script", "Shows used abilities")
+local AbilityInfomm = {}
+AbilityInfom.optionEnable = Menu.AddOption({"Kostya12rus", "Ability Info"}, "On/Off script", "Shows used abilities")
 
-function AbilityInfo.OnLinearProjectileCreate(projectile)
-	if not Menu.IsEnabled(AbilityInfo.optionEnable) then return end
+function AbilityInfom.OnLinearProjectileCreate(projectile)
+	if not Menu.IsEnabled(AbilityInfom.optionEnable) then return end
 	local temptable = {}
 	if not Entity.IsSameTeam(Heroes.GetLocal(),projectile.source) then
 		if projectile.name == "mirana_spell_arrow" then
@@ -19,8 +19,8 @@ function AbilityInfo.OnLinearProjectileCreate(projectile)
 	end
 end
 
-function AbilityInfo.OnParticleCreate(particle)
-	if not Menu.IsEnabled(AbilityInfo.optionEnable) then return end
+function AbilityInfom.OnParticleCreate(particle)
+	if not Menu.IsEnabled(AbilityInfom.optionEnable) then return end
 	local temptable = {}
 	if (particle.entity and not Entity.IsSameTeam(Heroes.GetLocal(),particle.entity)) or not particle.entity then
 		if particle.name == "smoke_of_deceit" then
@@ -99,7 +99,7 @@ function AbilityInfo.OnParticleCreate(particle)
 	end
 end
 
-function AbilityInfo.OnParticleUpdate(particle)
+function AbilityInfom.OnParticleUpdate(particle)
 	for _,parttable in pairs(wellwellpel) do
 		if particle.index == parttable.numberpart and parttable.name == "smoke_of_deceit" and particle.controlPoint == 0 and not parttable.vector then
 			parttable.vector = particle.position
@@ -107,8 +107,8 @@ function AbilityInfo.OnParticleUpdate(particle)
 	end
 end
 
-function AbilityInfo.OnUpdate()
-	if not Menu.IsEnabled(AbilityInfo.optionEnable) then drawimg = false return end
+function AbilityInfom.OnUpdate()
+	if not Menu.IsEnabled(AbilityInfom.optionEnable) then drawimg = false return end
 	local myHero = Heroes.GetLocal()
 	if not myHero then return end
 	for i,clear in pairs(wellwellpel) do
@@ -151,7 +151,7 @@ function AbilityInfo.OnUpdate()
 	drawimg = true
 end
 
-function AbilityInfo.OnDraw()
+function AbilityInfom.OnDraw()
 	if not drawimg then return end
 	for i,abil in pairs(wellwellpel) do
 		if abil then
@@ -181,13 +181,13 @@ function AbilityInfo.OnDraw()
 			else
 				img3 = img2
 			end
-			AbilityInfo.DrawInfo(img1,img2,img3,i,abil.format)
+			AbilityInfom.DrawInfo(img1,img2,img3,i,abil.format)
 		end
 	end
 end
 
 
-function AbilityInfo.DrawInfo(img1,img2,img3,index,formats)
+function AbilityInfom.DrawInfo(img1,img2,img3,index,formats)
 	Renderer.SetDrawColor(255,255,255,255)
 	local posx = math.ceil(size_x-backgroundsize*3)
 	local posy = math.ceil(size_y-200-backgroundsize*1.1*index)
@@ -226,7 +226,7 @@ function AbilityInfo.DrawInfo(img1,img2,img3,index,formats)
 	end
 end
 
-function AbilityInfo.init()
+function AbilityInfom.init()
 	blankcard = Renderer.LoadImage('resource/flash3/images/heroes/selection/blankcard_loadout.png')
 	cleercard = Renderer.LoadImage('resource/flash3/images/spellicons/invoker_empty1.png')
 	heroIcon = "resource/flash3/images/heroes/selection/"
@@ -248,13 +248,13 @@ function AbilityInfo.init()
 	}
 end
 
-function AbilityInfo.OnGameStart()
-  AbilityInfo.init()
+function AbilityInfom.OnGameStart()
+  AbilityInfom.init()
 end
 
-function AbilityInfo.OnGameEnd()
-  AbilityInfo.init()
+function AbilityInfom.OnGameEnd()
+  AbilityInfom.init()
 end
-AbilityInfo.init()
+AbilityInfom.init()
 
-return AbilityInfo
+return AbilityInfom
