@@ -147,7 +147,7 @@ function AbilityInfom.OnParticleCreate(particle)
 				format = true
 			}
 			table.insert(wellwellpel,temptable)
-		elseif particle.name == "teleport_start" and not Entity.IsSameTeam(Heroes.GetLocal(),particle.entityForModifiers)  then
+		elseif particle.name == "teleport_start" and not Entity.IsSameTeam(Heroes.GetLocal(),particle.entityForModifiers) then
 			temptable = 
 			{
 				name = "tpscroll",
@@ -165,6 +165,19 @@ function AbilityInfom.OnParticleCreate(particle)
 				target = particle.entity,
 				timer = GameRules.GetGameTime() + 5,
 				format = true
+			}
+			table.insert(wellwellpel,temptable)
+		elseif particle.name == "pudge_meathook" and not Entity.IsSameTeam(Heroes.GetLocal(),particle.entityForModifiers) then
+			temptable = 
+			{
+				name = "pudge_meat_hook",
+				sourse = particle.entityForModifiers,
+				target = nil,
+				timer = GameRules.GetGameTime() + 5,
+				format = true,
+				numberpart = particle.index,
+				startpos = nil,
+				endpos = nil
 			}
 			table.insert(wellwellpel,temptable)
 		end
@@ -194,9 +207,22 @@ end
 
 function AbilityInfom.OnParticleUpdate(particle)
 	for _,parttable in pairs(wellwellpel) do
-		if parttable then
-			if particle.index == parttable.numberpart and parttable.name == "smoke_of_deceit" and particle.controlPoint == 0 and not parttable.vector then
+		if parttable and particle.index == parttable.numberpart then
+			if parttable.name == "smoke_of_deceit" and particle.controlPoint == 0 then
 				parttable.vector = particle.position
+			elseif parttable.name == "pudge_meat_hook" and particle.controlPoint == 1 then
+				parttable.endpos = particle.position
+				parttable.target = AbilityInfom.FindTargetVector(parttable.startpos,particle.position)
+			end
+		end
+	end
+end
+
+function AbilityInfom.OnParticleUpdateEntity(particle)
+	for _,parttable in pairs(wellwellpel) do
+		if parttable and particle.index == parttable.numberpart then
+			if parttable.name == "pudge_meat_hook" and particle.controlPoint == 0 then
+				parttable.startpos = particle.position
 			end
 		end
 	end
@@ -317,8 +343,10 @@ function AbilityInfom.OnUpdate()
 						if clear.name == "spirit_breaker_charge_of_darkness" and hero and NPC.HasModifier(hero,"modifier_spirit_breaker_charge_of_darkness_vision") then
 							clear.target = hero
 						end
-						if clear.name == "smoke_of_deceit" and npc and NPC.HasModifier(npc,"modifier_smoke_of_deceit")then
-							wellwellpel[i] = nil
+						if clear.name == "smoke_of_deceit" and NPC.HasModifier(hero,"modifier_smoke_of_deceit") then
+							if Entity.GetAbsOrigin(hero):Distance(clear.vector):Length2D() < 500 then
+								wellwellpel[i] = nil
+							end
 						end
 					end
 				end
@@ -371,6 +399,32 @@ function AbilityInfom.OnDraw()
 	end
 end
 
+function AbilityInfom.FindTargetVector(startpos,endpos)
+	local rangehook = math.floor(startpos:Distance(endpos):Length2D())
+	for i = 100,rangehook,100 do
+		Log.Write(i)
+		local VectorToEnd = AbilityInfom.GetVec(startpos,endpos,i)
+		if VectorToEnd then
+			local heroes = Heroes.InRadius(VectorToEnd,200,Entity.GetTeamNum(Heroes.GetLocal()),Enum.TeamType.TEAM_FRIEND)
+			if heroes[1] then
+				return heroes[1]
+			end
+		end
+	end
+end
+
+function AbilityInfom.GetVec(poss1,poss2,range)
+	if poss1 and poss2 and range then
+		local pos1 = poss1
+		local pos2 = poss1
+		local pos3 = poss2
+		pos1:SetZ(0)
+		pos3:SetZ(0)
+		return pos2 + ((pos3 - pos1):Normalized()):Scaled(range)
+	else
+		return nil
+	end
+end
 
 function AbilityInfom.DrawInfo(img1,img2,img3,index,formats)
 	Renderer.SetDrawColor(255,255,255,255)
