@@ -180,6 +180,16 @@ function AbilityInfom.OnParticleCreate(particle)
 				endpos = nil
 			}
 			table.insert(wellwellpel,temptable)
+		elseif particle.name == "ursa_enrage_buff" then
+			temptable = 
+			{
+				name = "ursa_enrage",
+				sourse = particle.entity,
+				target = particle.entity,
+				timer = GameRules.GetGameTime() + 5,
+				format = true
+			}
+			table.insert(wellwellpel,temptable)
 		end
 	end
 	if particle.name == "roshan_spawn" then
