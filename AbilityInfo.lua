@@ -1,5 +1,6 @@
 local AbilityInfom = {}
 AbilityInfom.optionEnable = Menu.AddOption({"Kostya12rus", "Ability Info"}, "On/Off script", "Shows used abilities")
+AbilityInfom.SizePanel = Menu.AddOption({"Kostya12rus", "Ability Info"}, "Panel size", "customizing the panel size", 50, 500, 10)
 
 function AbilityInfom.OnLinearProjectileCreate(projectile)
 	if not Menu.IsEnabled(AbilityInfom.optionEnable) then return end
@@ -399,12 +400,15 @@ function AbilityInfom.OnDraw()
 			end
 			
 			local img3
+			local imgformat = nil
 			if abil.target then
 				img3 = HeroImg[NPC.GetUnitName(abil.target)]
+				imgformat = false
 			else
 				img3 = img2
+				imgformat = true
 			end
-			AbilityInfom.DrawInfo(img1,img2,img3,i,abil.format)
+			AbilityInfom.DrawInfo(img1,img2,img3,i,imgformat)
 		end
 	end
 end
@@ -437,41 +441,31 @@ function AbilityInfom.GetVec(poss1,poss2,range)
 end
 
 function AbilityInfom.DrawInfo(img1,img2,img3,index,formats)
+	backgroundsize = Menu.GetValue(AbilityInfom.SizePanel)
+	imgsize = math.ceil(backgroundsize*0.75)
+	size_x, size_y = Renderer.GetScreenSize()
+	
 	Renderer.SetDrawColor(255,255,255,255)
 	local posx = math.ceil(size_x-backgroundsize*3)
 	local posy = math.ceil(size_y-200-backgroundsize*1.1*index)
 	Renderer.DrawImage(blankcard,posx,posy,backgroundsize*3,backgroundsize)
 	
 	
-	local imgposx1 = math.ceil(posx+backgroundsize*0.32)
+	local imgposx1 = math.ceil(posx+backgroundsize*0.39)
 	local imgposy1 = math.ceil(posy + (backgroundsize-imgsize)/2)
-	if not img1 then
-		Renderer.DrawImage(cleercard,imgposx1,imgposy1,math.ceil(imgsize*0.90),imgsize)
-	else
-		Renderer.DrawImage(img1,imgposx1,imgposy1,math.ceil(imgsize*0.90),imgsize)
-	end
+	Renderer.DrawImage(img1,imgposx1,imgposy1,math.ceil(imgsize*0.80),imgsize)
 	
-	local imgsize2 = math.ceil(imgsize*0.75)
+	local imgsize2 = math.ceil(imgsize*0.9)
 	local imgposx2 = math.ceil(posx+(backgroundsize*3)/2-imgsize2/2)
 	local imgposy2 = math.ceil(posy + (backgroundsize-imgsize2)/2)
 	Renderer.DrawImage(img2,imgposx2,imgposy2,imgsize2,imgsize2)
 	
+	local imgposx3 = math.ceil(posx+backgroundsize*2)
+	local imgposy3 = math.ceil(posy + (backgroundsize-imgsize)/2)
 	if formats then
-		local imgposx3 = math.ceil(posx+backgroundsize*2)
-		local imgposy3 = math.ceil(posy + (backgroundsize-imgsize)/2)
-		if not img3 then
-			Renderer.DrawImage(cleercard,imgposx3,imgposy3,math.ceil(imgsize*0.90),imgsize)
-		else
-			Renderer.DrawImage(img3,imgposx3,imgposy3,math.ceil(imgsize*0.90),imgsize)
-		end
+		Renderer.DrawImage(img3,imgposx3,imgposy3,imgsize,imgsize)
 	else
-		local imgposx3 = math.ceil(posx+backgroundsize*2)
-		local imgposy3 = math.ceil(posy + (backgroundsize-imgsize)/2)
-		if not img3 then
-			Renderer.DrawImage(cleercard,imgposx3,imgposy3,imgsize,imgsize)
-		else
-			Renderer.DrawImage(img3,imgposx3,imgposy3,imgsize,imgsize)
-		end
+		Renderer.DrawImage(img3,imgposx3,imgposy3,math.ceil(imgsize*0.80),imgsize)
 	end
 end
 
@@ -485,9 +479,6 @@ function AbilityInfom.init()
 	HeroImg = {}
 	timerss = 0
 	timertorrent = 0
-	backgroundsize = 88
-	imgsize = math.ceil(backgroundsize*0.75)
-	size_x, size_y = Renderer.GetScreenSize()
 	drawimg = false
 	wellwellpel = {}
 	InvisInfo = {}
