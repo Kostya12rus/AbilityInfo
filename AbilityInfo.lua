@@ -393,7 +393,7 @@ function AbilityInfom.OnDraw()
 			end
 			
 			local img1
-			if abil.sourse and NPC.IsHero(abil.sourse) then
+			if abil.sourse and NPCs.Contains(abil.sourse) and NPC.IsHero(abil.sourse) then
 				img1 = HeroImg[NPC.GetUnitName(abil.sourse)]
 			else
 				img1 = img2
@@ -401,7 +401,7 @@ function AbilityInfom.OnDraw()
 			
 			local img3
 			local imgformat = nil
-			if abil.target and NPC.IsHero(abil.target) then
+			if abil.target and NPCs.Contains(abil.target) and NPC.IsHero(abil.target) then
 				img3 = HeroImg[NPC.GetUnitName(abil.target)]
 				imgformat = false
 			else
