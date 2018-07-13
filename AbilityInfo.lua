@@ -339,24 +339,26 @@ function AbilityInfom.OnUpdate()
 			end
 			if not clear.sourse or not clear.target then
 				for _,hero in pairs(NPCs.GetAll()) do
-					if not Entity.IsSameTeam(Heroes.GetLocal(),hero) then
-						if clear.name == "nyx_assassin_vendetta" and hero and NPC.HasAbility(hero,"nyx_assassin_vendetta") then
-							clear.sourse = hero
-							clear.target = hero
-						elseif clear.name == "bounty_hunter_wind_walk" and hero and NPC.HasAbility(hero,"bounty_hunter_wind_walk") then
-							clear.sourse = hero
-							clear.target = hero
-						elseif clear.name == "sven_gods_strength" and hero and NPC.HasAbility(hero,"sven_gods_strength") then
-							clear.sourse = hero
-							clear.target = hero
-						end
-					else
-						if clear.name == "spirit_breaker_charge_of_darkness" and hero and NPC.HasModifier(hero,"modifier_spirit_breaker_charge_of_darkness_vision") then
-							clear.target = hero
-						end
-						if clear.name == "smoke_of_deceit" and NPC.HasModifier(hero,"modifier_smoke_of_deceit") then
-							if Entity.GetAbsOrigin(hero):Distance(clear.vector):Length2D() < 500 then
-								wellwellpel[i] = nil
+					if hero then
+						if not Entity.IsSameTeam(Heroes.GetLocal(),hero) then
+							if clear.name == "nyx_assassin_vendetta" and NPC.HasAbility(hero,"nyx_assassin_vendetta") then
+								clear.sourse = hero
+								clear.target = hero
+							elseif clear.name == "bounty_hunter_wind_walk" and NPC.HasAbility(hero,"bounty_hunter_wind_walk") then
+								clear.sourse = hero
+								clear.target = hero
+							elseif clear.name == "sven_gods_strength" and NPC.HasAbility(hero,"sven_gods_strength") then
+								clear.sourse = hero
+								clear.target = hero
+							end
+						else
+							if clear.name == "spirit_breaker_charge_of_darkness" and NPC.HasModifier(hero,"modifier_spirit_breaker_charge_of_darkness_vision") then
+								clear.target = hero
+							end
+							if clear.name == "smoke_of_deceit" and NPC.HasModifier(hero,"modifier_smoke_of_deceit") then
+								if Entity.GetAbsOrigin(hero):Distance(clear.vector):Length2D() < 500 then
+									wellwellpel[i] = nil
+								end
 							end
 						end
 					end
