@@ -367,7 +367,7 @@ function AbilityInfom.OnUpdate()
 	for i,hero in pairs(Heroes.GetAll()) do
 		if hero then
 			if not HeroImg[NPC.GetUnitName(hero)] then
-				HeroImg[NPC.GetUnitName(hero)] = Renderer.LoadImage(heroIcon .. NPC.GetUnitName(hero) .. ".png")
+				HeroImg[NPC.GetUnitName(hero)] = Renderer.LoadImage(string.gsub(heroIcon, "*", NPC.GetUnitName(hero)))
 			end
 		end
 	end
@@ -382,12 +382,12 @@ function AbilityInfom.OnDraw()
 			local img2 
 			if abil.name == "smoke_of_deceit" or abil.name == "tpscroll" or abil.name == "invis_sword" or abil.name == "silver_edge" then
 				if not HeroImg[abil.name] then
-					HeroImg[abil.name] = Renderer.LoadImage("resource/flash3/images/items/" .. abil.name .. ".png")
+					HeroImg[abil.name] = Renderer.LoadImage(string.gsub(ItemIconpath, "*", abil.name))
 				end
 				img2 = HeroImg[abil.name]
 			else
 				if not HeroImg[abil.name] then
-					HeroImg[abil.name] = Renderer.LoadImage(spellIconpath .. abil.name .. ".png")
+					HeroImg[abil.name] = Renderer.LoadImage(string.gsub(spellIconpath, "*", abil.name))
 				end
 				img2 = HeroImg[abil.name]
 			end
@@ -475,12 +475,11 @@ function AbilityInfom.DrawInfo(img1,img2,img3,index,formats)
 end
 
 function AbilityInfom.init()
-	blankcard = Renderer.LoadImage('resource/flash3/images/heroes/selection/blankcard_loadout.png')
-	cleercard = Renderer.LoadImage('resource/flash3/images/spellicons/invoker_empty1.png')
-	heroIcon = "resource/flash3/images/heroes/selection/"
-	heroIconpaths = "resource/flash3/images/heroes/"
-	spellIconpath = "resource/flash3/images/spellicons/"
-	ItemIconpath = "resource/flash3/images/items/"
+	blankcard = Renderer.LoadImage('panorama/images/weekend_tourney/battle_cup_tooltip_backer_champions_fall_psd.vtex_c')
+	cleercard = Renderer.LoadImage('panorama/images/heroes/selection/invoker_empty1_png.vtex_c')
+	heroIcon = "panorama/images/heroes/selection/*_png.vtex_c"
+	spellIconpath = "panorama/images/spellicons/*_png.vtex_c"
+	ItemIconpath = "panorama/images/items/*_png.vtex_c"
 	HeroImg = {}
 	timerss = 0
 	timertorrent = 0
