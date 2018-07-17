@@ -478,7 +478,7 @@ end
 
 function AbilityInfom.init()
 	blankcard = Renderer.LoadImage('panorama/images/weekend_tourney/battle_cup_tooltip_backer_champions_fall_psd.vtex_c')
-	cleercard = Renderer.LoadImage('panorama/images/heroes/selection/invoker_empty1_png.vtex_c')
+	cleercard = Renderer.LoadImage('panorama/images/spellicons/invoker_empty1_png.vtex_c')
 	heroIcon = "panorama/images/heroes/selection/*_png.vtex_c"
 	spellIconpath = "panorama/images/spellicons/*_png.vtex_c"
 	ItemIconpath = "panorama/images/items/*_png.vtex_c"
